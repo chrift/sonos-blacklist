@@ -1,0 +1,25 @@
+{
+  "name": "sonos-blacklist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "sonos": "^0.8.0",
+    "underscore": "^1.8.3",
+    "async": "^1.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrift/sonos-blacklist.git"
+  },
+  "author": "Chris Cheshire",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chrift/sonos-blacklist/issues"
+  },
+  "homepage": "https://github.com/chrift/sonos-blacklist#readme"
+}
