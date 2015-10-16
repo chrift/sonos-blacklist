@@ -24,7 +24,7 @@ var ips = [
 		currentTrack: null
 	}
 ];
-var todaysDate = moment().startOf('day').format();
+//var todaysDate = moment().startOf('day').format();
 
 var counterFile = path.join(__dirname, 'counter.json');
 
@@ -32,7 +32,7 @@ var counter = JSON.parse(fs.readFileSync(counterFile).toString()) || {};
 
 var counterChanged = false;
 
-counter[todaysDate] = counter[todaysDate] || {};
+//counter[todaysDate] = counter[todaysDate] || {};
 
 _.each(ips, function (obj) {
 	obj.sonos = new Sonos(obj.ip, 1400)
@@ -112,6 +112,10 @@ async.forever(function (nextForever) {
 });
 
 function incrementSong(songObj, skipped) {
+	var todaysDate = moment().startOf('day').format();
+
+	counter[todaysDate] = counter[todaysDate] || {};
+
 	counterChanged = true;
 
 	counter[todaysDate][songObj.title + ' - ' + songObj.artist] = counter[todaysDate][songObj.title + ' - ' + songObj.artist] || songObj;
