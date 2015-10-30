@@ -24,35 +24,21 @@ var ips = [
 		currentTrack: null
 	}
 ];
-//var todaysDate = moment().startOf('day').format();
 
-var counterFile = path.join(__dirname, 'counter.json');
+var counterFile,
+    counter;
 
-var counter = JSON.parse(fs.readFileSync(counterFile).toString()) || {};
+_setCounter();
 
 var counterChanged = false;
-
-//counter[todaysDate] = counter[todaysDate] || {};
 
 _.each(ips, function (obj) {
 	obj.sonos = new Sonos(obj.ip, 1400)
 });
 
-var blacklist = [
-	'feel my face',
-	'what do you mean',
-	'locked away',
-	'hotline bling',
-	'on my mind',
-	'easy love',
-	'nae nae',
-	'shut up and dance',
-	'black magic',
-	'cheerleader',
-	'want to want me'
-];
-
 async.forever(function (nextForever) {
+	var blacklist = _getBlacklist();
+
 	async.each(ips, function (obj, nextIP) {
 		obj.sonos.currentTrack(function (err, response) {
 			if (!response || !response.title)
@@ -63,7 +49,7 @@ async.forever(function (nextForever) {
 			var foundInBlacklist = false;
 
 			_.each(blacklist, function (track) {
-				var rgx = new RegExp(track, 'gi');
+				var rgx = new RegExp(escapeRegExp(track), 'gi');
 
 				if (foundInBlacklist || !response.title.match(rgx))
 					return;
@@ -99,35 +85,65 @@ async.forever(function (nextForever) {
 			}
 		});
 	}, function () {
+		_saveCounter();
+
 		setTimeout(nextForever, 2000);
-
-		if (counterChanged) {
-			counterChanged = false;
-
-			fs.writeFileSync(counterFile, JSON.stringify(counter));
-		}
 	});
 }, function () {
 	console.log('error');
 });
 
 function incrementSong(songObj, skipped) {
-	var todaysDate = moment().startOf('day').format();
-
-	counter[todaysDate] = counter[todaysDate] || {};
-
 	counterChanged = true;
 
-	counter[todaysDate][songObj.title + ' - ' + songObj.artist] = counter[todaysDate][songObj.title + ' - ' + songObj.artist] || songObj;
+	var songCounter = counter[songObj.title + ' - ' + songObj.artist] = counter[songObj.title + ' - ' + songObj.artist] || songObj;
 
-	counter[todaysDate][songObj.title + ' - ' + songObj.artist].skipped = counter[todaysDate][songObj.title + ' - ' + songObj.artist].skipped || 0;
-	counter[todaysDate][songObj.title + ' - ' + songObj.artist].count = counter[todaysDate][songObj.title + ' - ' + songObj.artist].count || 0;
+	songCounter.skipped = songCounter.skipped || 0;
+	songCounter.count = songCounter.count || 0;
 
 	if (skipped) {
-		counter[todaysDate][songObj.title + ' - ' + songObj.artist].skipped++;
+		songCounter.skipped++;
 	} else {
-		counter[todaysDate][songObj.title + ' - ' + songObj.artist].count++;
+		songCounter.count++;
 	}
+}
+
+function _getTodaysCounterPath() {
+	return path.join(__dirname, 'counters', moment().startOf('day').format() + '.json');
+}
+
+function _setCounter() {
+	counterFile = _getTodaysCounterPath();
+
+	try {
+		fs.statSync(counterFile)
+	} catch (e) {
+		fs.writeFileSync(counterFile, '{}');
+	}
+
+	try {
+		counter = JSON.parse(fs.readFileSync(counterFile).toString());
+	} catch (e) {
+		counter = {};
+	}
+}
+
+function _saveCounter() {
+	if (counterChanged) {
+		counterChanged = false;
+
+		fs.writeFileSync(counterFile, JSON.stringify(counter));
+
+		_setCounter();
+	}
+}
+
+function _getBlacklist() {
+	return JSON.parse(fs.readFileSync(path.join(__dirname, 'blacklist.json')).toString()) || [];
+}
+
+function escapeRegExp(str) {
+	return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
 
 console.log('Watching...');
