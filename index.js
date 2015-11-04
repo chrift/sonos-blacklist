@@ -49,9 +49,37 @@ async.forever(function (nextForever) {
 			var foundInBlacklist = false;
 
 			_.each(blacklist, function (track) {
-				var rgx = new RegExp(escapeRegExp(track), 'gi');
+				if (foundInBlacklist) //Don't go any further if we've already found this song in our blacklist
+					return;
 
-				if (foundInBlacklist || !response.title.match(rgx))
+				if (typeof track === 'object') {
+					var blacklisted = true; //Must NOT match any blacklist rules in order to remain true
+
+					if (track.title) {
+						var titleRGX = new RegExp(escapeRegExp(track.title), 'gi');
+
+						if (!response.title.match(titleRGX))
+							blacklisted = false;
+					}
+
+					if (track.artist) {
+						var artistRGX = new RegExp(escapeRegExp(track.artist), 'gi');
+
+						if (!response.artist.match(artistRGX))
+							blacklisted = false;
+					}
+
+					//If it passed all of our tests, blacklist the shit out of it!
+					if (blacklisted)
+						foundInBlacklist = true;
+				} else {
+					var rgx = new RegExp(escapeRegExp(track), 'gi');
+
+					if (response.title.match(rgx))
+						foundInBlacklist = true;
+				}
+
+				if (!foundInBlacklist)
 					return;
 
 				console.log('About to skip');
