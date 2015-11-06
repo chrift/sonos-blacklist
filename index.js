@@ -55,14 +55,14 @@ async.forever(function (nextForever) {
 				if (typeof track === 'object') {
 					var blacklisted = true; //Must NOT match any blacklist rules in order to remain true
 
-					if (track.title) {
+					if (track.title && response.title) {
 						var titleRGX = new RegExp(escapeRegExp(track.title), 'gi');
 
 						if (!response.title.match(titleRGX))
 							blacklisted = false;
 					}
 
-					if (track.artist) {
+					if (track.artist && response.artist) {
 						var artistRGX = new RegExp(escapeRegExp(track.artist), 'gi');
 
 						if (!response.artist.match(artistRGX))
