@@ -53,21 +53,23 @@ async.forever(function (nextForever) {
 					return;
 
 				if (typeof track === 'object') {
-					var matchSongBlacklist = false,
+					var matchSongBlacklist   = false,
 					    matchArtistBlacklist = false;
 
-					if (track.title && response.title) {
+					if (!track.title) {
+						matchSongBlacklist = true;
+					} else if (track.title && response.title) {
 						var titleRGX = new RegExp(escapeRegExp(track.title), 'gi');
 
-						if (response.title.match(titleRGX))
-							matchSongBlacklist = true;
+						matchSongBlacklist = !!response.title.match(titleRGX)
 					}
 
-					if (track.artist && response.artist) {
+					if (!track.artist) {
+						matchArtistBlacklist = true;
+					} else if (track.artist && response.artist) {
 						var artistRGX = new RegExp(escapeRegExp(track.artist), 'gi');
 
-						if (response.artist.match(artistRGX))
-							matchArtistBlacklist = true;
+						matchArtistBlacklist = !!response.artist.match(artistRGX);
 					}
 
 					//If it passed all of our tests, blacklist the shit out of it!
