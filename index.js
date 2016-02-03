@@ -9,7 +9,7 @@ var _      = require('underscore'),
 
 var ips = [
 	{
-		ip: '10.41.10.142', //Oval office
+		ip: '10.41.10.100', //Oval office
 		sonos: null,
 		currentTrack: null
 	},
@@ -33,7 +33,7 @@ _setCounter();
 var counterChanged = false;
 
 _.each(ips, function (obj) {
-	obj.sonos = new Sonos(obj.ip, 1400)
+	obj.sonos = new Sonos(obj.ip, 1400);
 });
 
 async.forever(function (nextForever) {
@@ -41,6 +41,9 @@ async.forever(function (nextForever) {
 
 	async.each(ips, function (obj, nextIP) {
 		obj.sonos.currentTrack(function (err, response) {
+			if(err)
+				console.error(err);
+
 			if (!response || !response.title)
 				return nextIP();
 
