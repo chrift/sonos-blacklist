@@ -9,17 +9,17 @@ var _      = require('underscore'),
 
 var ips = [
 	{
-		ip: '10.41.10.100', //Oval office
+		ip: '10.41.10.102',
 		sonos: null,
 		currentTrack: null
 	},
 	{
-		ip: '10.41.10.124', //Engine room
+		ip: '10.41.10.125',
 		sonos: null,
 		currentTrack: null
 	},
 	{
-		ip: '10.41.10.104', //Mezz
+		ip: '10.41.10.144',
 		sonos: null,
 		currentTrack: null
 	}
