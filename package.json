@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "async": "^1.4.2",
-    "moment": "^2.10.6",
-    "sonos": "^0.8.0",
-    "underscore": "^1.8.3"
+    "async": "^2.6.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.20.1",
+    "sonos": "^0.22.2"
   },
   "devDependencies": {},
   "scripts": {
