@@ -20,8 +20,6 @@ _setCounter();
 
 debug('Discovering sonos devices...');
 
-debug(blacklistFilePath);
-
 fs.watchFile(blacklistFilePath, () => {
   debug('Blacklist change detected');
 
