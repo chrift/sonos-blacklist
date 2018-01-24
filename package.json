@@ -11,7 +11,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "prod": "pm2 start index.js --name 'sonos-blacklist'",
+    "prod": "DEBUG=blacklist:* pm2 start index.js --name 'sonos-blacklist'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
